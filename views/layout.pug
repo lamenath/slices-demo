@@ -1,0 +1,18 @@
+doctype html(lang='en')
+
+head
+    title Originate
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+
+    // Site-specific style
+    link(href="https://fonts.googleapis.com/css?family=Kameron", rel="stylesheet", type="text/css")
+    link(rel="stylesheet", href="/stylesheets/reset.css")
+    link(rel="stylesheet", href="/stylesheets/style.css")
+
+    // Required for Previews and Experiments
+    script(src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=", crossorigin="anonymous")
+    script
+      = ctx?"window.prismic = { endpoint: '" + ctx.endpoint + "' };":""
+    script(src="//static.cdn.prismic.io/prismic.min.js")
+body
+    block body

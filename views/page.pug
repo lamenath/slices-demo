@@ -1,0 +1,137 @@
+extends ./layout.pug
+
+block body
+  div.logo
+    img(src='/images/originate-demo.png')
+  hr
+  nav.centered-layout
+    ul
+      li
+        a(href='#') AGENCY
+      li
+        a(href='#') PORTFOLIO
+      li
+        a(href='#') EVENTS
+      li
+        a(href='#') RESOURCES
+      li
+        a(href='#') ABOUT US
+  header
+    h1(data-wio-id=page.id)
+      = page.get('page.title') ? page.get('page.title').asText() : ''
+    p
+      = page.get('page.description') ? page.get('page.description').asText() : ''
+
+  - var slices = page.get('page.body').slices
+  for slice, index in slices
+    //- Render the right markup for a given slice type.
+    case slice.sliceType
+
+      when 'separator'
+        hr.separator
+
+      when 'section-heading'
+        - var txt = slice.value.toArray()[0]
+        h2.section-heading
+          = txt.asText()
+
+      when 'featured-horizontal'
+        - var feature = slice.value.toArray()[0]
+        - var illustration = feature.get('illustration') ? feature.get('illustration').main.url : ''
+        div.featured-horizontal
+          div.illustration(style='background-image: url(' + illustration + ')')
+          div.text
+            span.title
+              = feature.get('title').asText()
+            if (feature.get('read-more-label'))
+              - var link = feature.get('read-more') ? feature.get('read-more').url(ctx.linkResolver) : '#'
+              a.button(href=link)
+                = feature.get('read-more-label').asText()
+
+
+      when 'featured-text'
+        - var feature = slice.value.toArray()[0]
+        .featured-text.centered-layout
+            span.title
+              = feature.get('title').asText()
+            p.summary
+              = feature.getText('summary')
+            if (feature.get('read-more-label'))
+              - var link = feature.get('read-more') ? feature.get('read-more').url(ctx.linkResolver) : '#'
+              a(href=link)
+                = feature.getText('read-more-label')
+
+      when 'featured-large'
+        - var feature = slice.value.toArray()[0]
+        - var illustration = feature.get('illustration') ? feature.get('illustration').main.url : ''
+        - var isLeft = feature.get('side') ? (feature.get('side').asText() === 'left') : true;
+        div.featured-large.centered-layout
+          div.illustration(style='background-image: url(' + illustration + ')', class=isLeft ? 'illustration--left' : 'illustration--right')
+          div.text
+            span.label-top
+              = feature.get('top-label').asText()
+            span.title
+              = feature.get('title').asText()
+            hr
+            p.summary
+              = feature.get('summary').asText()
+            if (feature.get('read-more-label'))
+              - var link = feature.get('read-more') ? feature.get('read-more').url(ctx.linkResolver) : '#'
+              a.button(href=link)
+                = feature.get('read-more-label').asText()
+
+      when 'featured-large-image'
+        - var feature = slice.value.toArray()[0]
+        - var illustration = feature.get('illustration') ? feature.get('illustration').main.url : ''
+        - var isLeft = feature.get('side') ? (feature.get('side').asText() === 'left') : false;
+        div.featured-large-image.centered-layout(style='background-image: url(' + illustration + ')')
+          .text(class=isLeft ? 'text--left' : 'text--right')
+            span.top-label
+              = feature.get('top-label').asText()
+            span.title
+              = feature.get('title').asText()
+            hr
+            if (feature.get('read-more-label'))
+              - var link = feature.get('read-more') ? feature.get('read-more').url(ctx.linkResolver) : '#'
+              a.button(href=link)
+                = feature.get('read-more-label').asText()
+
+      when 'featured-medium'
+        .featured-medium.centered-layout
+          for feature in slice.value.toArray()
+            - var illustration = feature.get('illustration') ? feature.get('illustration').main.url : null
+            .item
+              .illustration(style='background-image: url(' + illustration + ')')
+              .text
+                span.title
+                  = feature.get('title').asText()
+                p.summary
+                  = feature.get('summary').asText()
+                if (feature.get('read-more-label'))
+                  - var link = feature.get('read-more') ? feature.get('read-more').url(ctx.linkResolver) : '#'
+                  a(href=link)
+                    = feature.get('read-more-label').asText()
+
+      // default
+      //   p(style='color: red')
+      //     = "unkown: " + slice.sliceType
+
+  footer.footer
+    p.footer © 2017 Originate Demo
+
+  script(type='text/javascript').
+    $('.tabs button').on('click', function() {
+      var $button = $(this);
+      var index = $button.index();
+      var $featuredTab = $button.closest('.featured-tab');
+      var $grouped = $featuredTab.next('.categories-grouped');
+      if($grouped.size() > 0) {
+        var $selected = $grouped.find('.categories:nth('+ index +')');
+        if($selected.size() > 0) {
+          $selected.siblings('.categories').removeClass('categories--active');
+          $selected.addClass('categories--active');
+          $button.siblings('button').removeClass('button--active');
+          $button.addClass('button--active');
+        }
+      }
+    });

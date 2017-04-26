@@ -1,0 +1,10 @@
+.categories.centered-layout(class=hasPrevCategory ? '' : 'categories--active')
+  - var categories = slice.value.toArray()
+  if (categories)
+    for category in categories
+      - var link = category.getLink('link')
+      - var illustration = category.get('illustration') ? category.get('illustration').main.url : ''
+      .category
+        img(src=illustration)
+        a.label(href= link ? link.url(ctx.linkResolver): '#')
+          = category.get('title').asText()
